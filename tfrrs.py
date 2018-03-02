@@ -17,6 +17,8 @@ def extract_performances(soup):
             for table_performance in table_performances:
                 table_performance["EVENT"] = event_name
             performances.extend(table_performances);
+    if (len(performances) == 0):
+        print("WARNING: No performances found")
     return performances
 
 def get_soup_for_page(page):
@@ -29,8 +31,9 @@ def clean_performances(performances):
     for performance in performances:
         if "MEET DATE" in performance:
             old_date = performance["MEET DATE"]
-            new_date = dt.datetime.strptime(old_date, '%b %d, %Y').strftime('%m/%d/%y')
-            performance["MEET DATE"] = new_date
+            new_date = dt.datetime.strptime(old_date, '%b %d, %Y').strftime('%m/%d/%Y')
+            del performance["MEET DATE"]
+            performance["DATE"] = new_date
         if "ATHLETE" in performance:
             name = performance["ATHLETE"]
             [last_name, first_name] = name.split(", ")
@@ -63,7 +66,7 @@ if __name__ == "__main__":
     print("Cleaning Data")
     clean_performances(all_performances)
 
-    output_filename = "data.json"
+    output_filename = "tutf-performances.json"
     with open(output_filename, 'w') as output_file:
         json.dump(all_performances, output_file)
 

@@ -28,20 +28,25 @@ def get_soup_for_page(page):
     return soup
 
 def clean_performances(performances):
-    for performance in performances:
-        if "MEET DATE" in performance:
-            old_date = performance["MEET DATE"]
+    cleaned_perfs = []
+    for perf in performances:
+        if "MEET DATE" in perf:
+            old_date = perf["MEET DATE"]
             new_date = dt.datetime.strptime(old_date, '%b %d, %Y').strftime('%m/%d/%Y')
-            del performance["MEET DATE"]
-            performance["DATE"] = new_date
-        if "ATHLETE" in performance:
-            name = performance["ATHLETE"]
+            del perf["MEET DATE"]
+            perf["DATE"] = new_date
+        if "ATHLETE" in perf:
+            name = perf["ATHLETE"]
             [last_name, first_name] = name.split(", ")
-            del performance["ATHLETE"]
-            performance["FIRST NAME"] = first_name
-            performance["LAST NAME"] = last_name
-        if "" in performance:
-            del performance[""]
+            del perf["ATHLETE"]
+            perf["FIRSTNAME"] = first_name
+            perf["LASTNAME"] = last_name
+        if "" in perf:
+            del perf[""]
+
+        cleaned_perf = { k.lower(): v for k, v in perf.items() }
+        cleaned_perfs.append(cleaned_perf)
+    return cleaned_perfs
 
 if __name__ == "__main__":
     results = [
@@ -50,7 +55,7 @@ if __name__ == "__main__":
         {"season": "2015 Indoor", "link": "https://www.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=1429&season_hnd=276"},
         {"season": "2015 Outdoor", "link": "https://www.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=1552&season_hnd=303"},
         {"season": "2016 Indoor", "link": "https://www.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=1587&season_hnd=309"},
-        {"season": "2016 Outdoor", "link": "https://www.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=1587&season_hnd=336"},
+        {"season": "2016 Outdoor", "link": "https://www.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=1683&season_hnd=336"},
         {"season": "2017 Indoor", "link": "https://www.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=1793&season_hnd=346"},
         {"season": "2017 Outdoor", "link": "https://www.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=1915&season_hnd=377"},
         {"season": "2018 Indoor", "link": "https://xc.tfrrs.org/all_performances/MA_college_m_Tufts.html?list_hnd=2120&season_hnd=388"}
@@ -64,7 +69,7 @@ if __name__ == "__main__":
         all_performances.extend(page_performances)
 
     print("Cleaning Data")
-    clean_performances(all_performances)
+    all_performances = clean_performances(all_performances)
 
     output_filename = "tutf-performances.json"
     with open(output_filename, 'w') as output_file:

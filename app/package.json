@@ -1,0 +1,10 @@
+{
+  "name": "tutftrends",
+  "version": "1.0.0",
+  "description": "Visualization for Tufts Track & Field Results",
+  "main": "index.js",
+  "repository": "https://github.com/gregorybchris/tutf-trends",
+  "author": "Chris Gregory",
+  "license": "MIT",
+  "private": false
+}

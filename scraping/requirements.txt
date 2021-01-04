@@ -10,7 +10,7 @@ numpy==1.14.1
 pyparsing==2.2.0
 python-dateutil==2.6.1
 pytz==2018.3
-requests==2.18.4
+requests==2.20.0
 scipy==1.0.0
 six==1.11.0
 urllib3==1.22
